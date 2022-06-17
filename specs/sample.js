@@ -1,4 +1,4 @@
- 
+
 /** some comment  */
 if (true) {
   foo({a: {
@@ -20,7 +20,7 @@ foo(2,
     sd,
     sdf
   });
-   
+ 
 foo(2, {
   sd,
   sdf
@@ -30,17 +30,17 @@ foo(2, {
     sd,
     sdf
   }, 'abc');
-   
+ 
 foo(2,
   {
     sd,
     sdf
   },
   'abc');
-     
+   
 foo(2,
   4);
-       
+     
 foo({
   symetric_opening_and_closing_scopes: 'indent me at 1'
 });
@@ -77,14 +77,14 @@ const a =
   {
     b: 1
   };
-             
-             
+           
+           
 /** if-then-else loops */
 if (true)
   foo();
   else
   bar();
-             
+           
 if (true) {
   foo();
   bar();
@@ -131,7 +131,7 @@ if (true)
   else
   if (more()) // 1
     foo(); // 2
-             
+         
 if (we
   ()) {
   go();
@@ -150,7 +150,7 @@ const x = {
 /** While loops */
 while (condition)
   inLoop();
-               
+             
 while (condition)
   inLoop();
 after();
@@ -202,20 +202,20 @@ req
 too.
   more.
   shouldBeOneToo;
-               
+             
 const a =
   long_expression;
-               
+             
 b =
   long;
-               
+             
 b =
   3 + 5;
-               
+             
 b =
   3
     + 5;
-               
+           
 b =
   3
     + 5
@@ -230,12 +230,12 @@ b =
     + 3 *
       9
     - 8;
-               
+           
 ifthis
   && thendo()
   || otherwise
     && dothis
-               
+           
 /** JSX */
 const jsx = (
   <div
@@ -292,11 +292,11 @@ class MyClass extends OtherComponent {
   state = {
     test: 1
   }
-                         
+                       
   constructor() {
     test();
   }
-                         
+                       
   otherfunction = (a, b = {
     default: false
   }) => {
@@ -318,14 +318,21 @@ const two = (
 
 const a?.b?.['test']?.more;
 const more = 1;
- 
+
+if (true) {
+  more;
+  if (false) {
+    again;
+  }
+}
+
 // --------------------------------------------------
 // TODO:
                          
 /**
 Not ideal, but should be solved by parsing the delimiters:
 should be at 1; */
-                         
+   
 // -------------------------------------------------
                          
 // broken syntax: keep last line's indentation

@@ -1,50 +1,50 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-
-// const log = (...args) => console.log('sane-indentation', ...args);
-const log = () => {};
+const log = (...args) => console.log('sane-indentation', ...args);
+  // global.saneDebug && console.log('sane-indentation', ...args);
+// const log = () => {};
 
 // TODO: read from settings
-const scopes = {
-  indent: {
-    array: true,
-    object: true,
-    arguments: true,
-    statement_block: true,
-    class_body: true,
-    parenthesized_expression: true,
-    jsx_element: true,
-    jsx_opening_element: true,
-    jsx_expression: true,
-    switch_body: true,
-  }, 
-  indentExceptFirst: {
-    member_expression: true,
-    assignment_expression: true,
-    expression_statement: true,
-    variable_declarator: true,
-    lexical_declaration: true,
-    binary_expression: true,
-    jsx_self_closing_element: true,
-  },
-  indentExceptFirstOrBlock: {
-    if_statement: true,
-    while_statement: true,
-  },
-  types: {
+const languageScopes = {
+  javascript: {
     indent: {
-      description: true 
+      array: true,
+      object: true,
+      arguments: true,
+      statement_block: true,
+      class_body: true,
+      parenthesized_expression: true,
+      jsx_element: true,
+      jsx_opening_element: true,
+      jsx_expression: true,
+      switch_body: true,
+    }, 
+    indentExceptFirst: {
+      member_expression: true,
+      assignment_expression: true,
+      expression_statement: true,
+      variable_declarator: true,
+      lexical_declaration: true,
+      binary_expression: true,
+      jsx_self_closing_element: true,
     },
-    outdent: {
-      else: true
+    indentExceptFirstOrBlock: {
+      if_statement: true,
+      while_statement: true,
+    },
+    types: {
+      indent: {
+        description: true 
+      },
+      outdent: {
+        else: true
+      }
     }
   }
 };
-
+languageScopes.javascriptreact = languageScopes.javascript;
+languageScopes.typescript = languageScopes.javascript;
+languageScopes.typescriptreact = languageScopes.javascript;
 
 
 /** Walk up the tree. Everytime we meet a scope type, check whether we
@@ -110,8 +110,27 @@ const treeWalk = (node, scopes, lastScope = null) => {
     return treeWalk(node.parent, scopes, newLastScope) + increment;
   }
 };
-
-
+ 
+const ensureIndentation = (line, currentIndentation, indentation, {textEditor, edit}) => {
+  log('ensureIndentation', line, currentIndentation, indentation);
+  
+  const tabSize = textEditor.options.tabSize;
+  // TODO: also use editorSettings.insertSpaces to see whether to use tabs or spaces
+   
+  // now ensure we are indented "result" on the current line
+  const missing = (indentation * tabSize) - currentIndentation; // TODO: use tab/spaces from settings
+  const insertionPoint = new vscode.Position(line, 0);
+  // vscode.window.showInformationMessage(`Sane: ${result}, ${missing}`);
+   
+  if (missing > 0) {
+    const toInsert = Array(missing + 1).join(' ');
+    edit.insert(insertionPoint, toInsert);
+  } else if (missing < 0) {
+    edit.delete(new vscode.Range(
+      new vscode.Position(line, indentation * tabSize),
+      new vscode.Position(line, currentIndentation)));
+  }
+};
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -126,23 +145,41 @@ async function activate(context) {
     throw new Error("Depends on pokey.parse-tree extension");
   }
   const { getNodeAtLocation } = await parseTreeExtension.activate();
-  
 
   /** indent the given line number */
   const indentLine = (line, {textEditor, edit}) => {
     // console.log('indentLine', line);
     
+    const scopes = languageScopes[textEditor.document.languageId];
+    if (!scopes) {
+      console.warn('no scopes defined for language', 
+        textEditor.document.languageId);
+      return;
+    }
+
     const currentLine = textEditor.document.lineAt(line).text;
     // find beginning of the line
-    const character = currentLine.search(/\S/);
-    // console.log(currentLine, line, currentLine.search(/\S/));
+    let character = currentLine.search(/\S/);
+    let altLine = line;
+    // if the current line is empty, find *last* character on last non-empty line
+    while (character < 0 && altLine > 0) {
+      altLine--;
+      const currentLine = textEditor.document.lineAt(altLine).text;
+      character = currentLine.search(/\S\s*/);
+    }
 
+    if (altLine == 0) {
+      log(line);
+      ensureIndentation(line, textEditor.document.lineAt(line).text.length, 0,
+        {textEditor, edit});
+      return;
+    }
+    
     try {
       let node = getNodeAtLocation({
         range: {start: {line, character}},
         uri: textEditor.document.uri
       });
-      // console.log(node.startPosition, node.endPosition);
       
       // walk up the tree to find highest node that still start here
       while (node && node.parent
@@ -153,31 +190,13 @@ async function activate(context) {
           node = node.parent;
        }
 
+      // To see what else is available on `node`:
       // console.log(node, node.parent, node.type,
       //   Object.getOwnPropertyNames(Object.getPrototypeOf(node))
       // );
         
-      // console.log('going on a walk');
       const result = treeWalk(node, scopes);
-      // console.log({line, result});     
-
-      const tabSize = textEditor.options.tabSize;
-      // TODO: also use editorSettings.insertSpaces to see whether to use tabs or spaces
-
-      // now ensure we are indented "result" on the current line
-      const missing = (result * tabSize) - character; // TODO: use tab/spaces from settings
-      const insertionPoint = new vscode.Position(line, 0);
-      // vscode.window.showInformationMessage(`Sane: ${result}, ${missing}`);
-
-  
-      if (missing > 0) {
-        const toInsert = Array(missing + 1).join(' ');
-        edit.insert(insertionPoint, toInsert);
-      } else if (missing < 0) {
-        edit.delete(new vscode.Range(
-          new vscode.Position(line, result * tabSize),
-          new vscode.Position(line, character)));
-      }
+      ensureIndentation(line, character, result, {textEditor, edit});
 
     } catch (e) {
       console.error(e);
@@ -186,18 +205,10 @@ async function activate(context) {
 
 
   const onCommand = (textEditor, edit) => {
-    // console.log("sane-indentation", textEditor, edit, args);
-    
-    // const editorSettings = vscode.workspace.getConfiguration('editor');
-    // const tabSize = editorSettings.tabSize;
-    // console.log("sane-indentation", {editorSettings});
-
+    log("sane-indentation", textEditor, edit);
     const {start, end} = textEditor.selection;
-    console.log("sane-indentation", {start, end});
+    log("sane-indentation", {start, end});
     
-    // const tree = getTree(textEditor.document);
-    // console.log("getTree", tree, tree.rootNode.child(1));
-
     for (let line = start.line; line <= end.line; line++) {
       indentLine(line, {textEditor, edit});
     }
