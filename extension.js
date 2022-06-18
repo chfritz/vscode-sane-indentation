@@ -18,7 +18,7 @@ const languageScopes = {
       jsx_opening_element: true,
       jsx_expression: true,
       switch_body: true,
-    }, 
+    },
     indentExceptFirst: {
       member_expression: true,
       assignment_expression: true,
@@ -34,7 +34,7 @@ const languageScopes = {
     },
     types: {
       indent: {
-        description: true 
+        description: true
       },
       outdent: {
         else: true
@@ -45,6 +45,8 @@ const languageScopes = {
 languageScopes.javascriptreact = languageScopes.javascript;
 languageScopes.typescript = languageScopes.javascript;
 languageScopes.typescriptreact = languageScopes.javascript;
+languageScopes.jsonc = languageScopes.javascript;
+languageScopes.json = languageScopes.javascript;
 
 
 /** Walk up the tree. Everytime we meet a scope type, check whether we
@@ -110,18 +112,18 @@ const treeWalk = (node, scopes, lastScope = null) => {
     return treeWalk(node.parent, scopes, newLastScope) + increment;
   }
 };
- 
+
 const ensureIndentation = (line, currentIndentation, indentation, {textEditor, edit}) => {
   log('ensureIndentation', line, currentIndentation, indentation);
-  
+
   const tabSize = textEditor.options.tabSize;
   // TODO: also use editorSettings.insertSpaces to see whether to use tabs or spaces
-   
+
   // now ensure we are indented "result" on the current line
   const missing = (indentation * tabSize) - currentIndentation; // TODO: use tab/spaces from settings
   const insertionPoint = new vscode.Position(line, 0);
   // vscode.window.showInformationMessage(`Sane: ${result}, ${missing}`);
-   
+
   if (missing > 0) {
     const toInsert = Array(missing + 1).join(' ');
     edit.insert(insertionPoint, toInsert);
@@ -136,7 +138,7 @@ const ensureIndentation = (line, currentIndentation, indentation, {textEditor, e
  * @param {vscode.ExtensionContext} context
  */
 async function activate(context) {
-  
+
   // for debugging
   global.vscode = vscode;
 
@@ -149,10 +151,10 @@ async function activate(context) {
   /** indent the given line number */
   const indentLine = (line, {textEditor, edit}) => {
     // console.log('indentLine', line);
-    
+
     const scopes = languageScopes[textEditor.document.languageId];
     if (!scopes) {
-      console.warn('no scopes defined for language', 
+      console.warn('no scopes defined for language',
         textEditor.document.languageId);
       return;
     }
@@ -174,13 +176,13 @@ async function activate(context) {
         {textEditor, edit});
       return;
     }
-    
+
     try {
       let node = getNodeAtLocation({
         range: {start: {line, character}},
         uri: textEditor.document.uri
       });
-      
+
       // walk up the tree to find highest node that still start here
       while (node && node.parent
         && node.parent.startPosition.row == node.startPosition.row
@@ -194,7 +196,7 @@ async function activate(context) {
       // console.log(node, node.parent, node.type,
       //   Object.getOwnPropertyNames(Object.getPrototypeOf(node))
       // );
-        
+
       const result = treeWalk(node, scopes);
       ensureIndentation(line, character, result, {textEditor, edit});
 
@@ -208,12 +210,12 @@ async function activate(context) {
     log("sane-indentation", textEditor, edit);
     const {start, end} = textEditor.selection;
     log("sane-indentation", {start, end});
-    
+
     for (let line = start.line; line <= end.line; line++) {
       indentLine(line, {textEditor, edit});
     }
   };
-  
+
 
   let disposable = vscode.commands.registerTextEditorCommand(
     'sane-indentation.indentLine', onCommand);
