@@ -155,7 +155,8 @@ async function activate(context) {
     const scopes = languageScopes[textEditor.document.languageId];
     if (!scopes) {
       console.warn('no scopes defined for language',
-        textEditor.document.languageId);
+        textEditor.document.languageId, ', falling back to reindent command');
+      vscode.commands.executeCommand('editor.action.reindentselectedlines');
       return;
     }
 
