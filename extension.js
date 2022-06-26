@@ -1,8 +1,8 @@
 const vscode = require('vscode');
 
-// const log = (...args) => console.log('sane-indentation', ...args);
+const log = (...args) => console.log('sane-indentation', ...args);
   // global.saneDebug && console.log('sane-indentation', ...args);
-const log = () => {};
+// const log = () => {};
 
 // TODO: read from settings
 const languageScopes = {
@@ -172,8 +172,10 @@ async function activate(context) {
     }
 
     if (altLine == 0) {
-      log(line);
-      ensureIndentation(line, textEditor.document.lineAt(line).text.length, 0,
+      character = currentLine.search(/\S\s*/);
+      log(line, character);
+      ensureIndentation(line, character >= 0 ? character :
+        textEditor.document.lineAt(line).text.length, 0,
         {textEditor, edit});
       return;
     }
