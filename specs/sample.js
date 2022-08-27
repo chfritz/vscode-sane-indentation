@@ -333,6 +333,17 @@ foo
       a: 1
     })
 
+
+import a
+  from 'library';
+
+import {a, b}
+  from 'library';
+
+import {
+    a, b
+  } from 'library';
+
 // --------------------------------------------------
 // TODO:
 
