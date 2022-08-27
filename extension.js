@@ -1,8 +1,8 @@
 const vscode = require('vscode');
 
-const log = (...args) => console.log('sane-indentation', ...args);
+// const log = (...args) => console.log('sane-indentation', ...args);
   // global.saneDebug && console.log('sane-indentation', ...args);
-// const log = () => {};
+const log = () => {};
 
 // TODO: read from settings
 const languageScopes = {
@@ -34,7 +34,8 @@ const languageScopes = {
     },
     types: {
       indent: {
-        description: true
+        description: true,
+        arguments: true,
       },
       outdent: {
         else: true
