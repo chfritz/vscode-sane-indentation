@@ -20,6 +20,9 @@ const languageScopes = {
       switch_body: true,
       named_imports: true,
       import_statement: true,
+      object_type: true,
+      enum_body: true,
+      union_type: true,
     },
     indentExceptFirst: {
       member_expression: true,
