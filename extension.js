@@ -23,6 +23,8 @@ const languageScopes = {
       object_type: true,
       enum_body: true,
       union_type: true,
+      formal_parameters: true,
+      object_pattern: true,
     },
     indentExceptFirst: {
       member_expression: true,

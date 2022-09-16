@@ -292,7 +292,13 @@ class MyClass extends OtherComponent {
     test: 1
   }
 
-  constructor() {
+  constructor(
+    arg1,
+    arg2, arg3,
+    { foo1,
+      foo2
+    }
+  ) {
     test();
   }
 
