@@ -34,6 +34,8 @@ const languageScopes = {
       lexical_declaration: true,
       binary_expression: true,
       jsx_self_closing_element: true,
+      switch_case: true,
+      switch_default: true,
     },
     indentExceptFirstOrBlock: {
       if_statement: true,

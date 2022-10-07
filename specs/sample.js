@@ -186,13 +186,14 @@ while (mycondition)
 
 switch (e) {
   case 5:
-  something();
-  more();
+    something();
+    more();
   case 6:
-  somethingElse();
+    somethingElse();
+    break;
   case 7:
   default:
-  done();
+    done();
 }
 
 /* multi-line expressions */
