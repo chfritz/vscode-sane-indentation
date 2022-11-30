@@ -50,6 +50,30 @@ const languageScopes = {
         else: true
       }
     }
+  },
+
+  shellscript: {
+    indent: {
+      if_statement: true,
+      while_statement: true,
+      do_group: true,
+      else_clause: true,
+      elif_clause: true,
+      compound_statement: true,
+    },
+    indentExceptFirst: {
+      case_item: true,
+    },
+    indentExceptFirstOrBlock: {
+    },
+    types: {
+      indent: {
+      },
+      outdent: {
+        else_clause: true,
+        elif_clause: true,
+      }
+    }
   }
 };
 languageScopes.javascriptreact = languageScopes.javascript;
