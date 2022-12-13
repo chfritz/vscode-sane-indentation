@@ -74,7 +74,59 @@ const languageScopes = {
         elif_clause: true,
       }
     }
-  }
+  },
+
+  cpp: {
+    indent: {
+      compound_statement: true,
+      field_declaration_list: true,
+      argument_list: true,
+      parameter_list: true,
+      for_statement: true,
+
+      // array: true,
+      // object: true,
+      // statement_block: true,
+      // class_body: true,
+      // parenthesized_expression: true,
+      // switch_body: true,
+      // named_imports: true,
+      // enum_body: true,
+      // union_type: true,
+      // formal_parameters: true,
+      // object_pattern: true,
+    },
+    indentExceptFirst: {
+      // if_statement: true,
+
+      // member_expression: true,
+      // assignment_expression: true,
+      // expression_statement: true,
+      // variable_declarator: true,
+      // lexical_declaration: true,
+      // binary_expression: true,
+      // jsx_self_closing_element: true,
+      // switch_case: true,
+      // switch_default: true,
+      init_declarator: true,
+      field_expression: true,
+    },
+    indentExceptFirstOrBlock: {
+      if_statement: true,
+      while_statement: true,
+      class_specifier: true,
+      function_definition: true,
+    },
+    types: {
+      indent: {
+        // description: true,
+        // arguments: true,
+      },
+      outdent: {
+        // else: true
+      }
+    }
+  },
 };
 languageScopes.javascriptreact = languageScopes.javascript;
 languageScopes.typescript = languageScopes.javascript;
