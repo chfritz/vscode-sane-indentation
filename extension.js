@@ -88,7 +88,7 @@ const languageScopes = {
       // object: true,
       // statement_block: true,
       // class_body: true,
-      // parenthesized_expression: true,
+      parenthesized_expression: true,
       // switch_body: true,
       // named_imports: true,
       // enum_body: true,
@@ -114,8 +114,10 @@ const languageScopes = {
     indentExceptFirstOrBlock: {
       if_statement: true,
       while_statement: true,
+      for_statement: true,
       class_specifier: true,
       function_definition: true,
+      template_function: true,
     },
     types: {
       indent: {

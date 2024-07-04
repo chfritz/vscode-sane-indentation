@@ -103,43 +103,43 @@ NAN_SETTER(GObjectWrap::SetProperty) {
 }
 
 class PullWorker : public Nan::AsyncWorker {
-public:
-PullWorker(Nan::Callback *callback, GstAppSink *appsink)
-: AsyncWorker(callback,"node-gst-superficial.PullWorker"), appsink(appsink) {};
+  public:
+  PullWorker(Nan::Callback *callback, GstAppSink *appsink)
+    : AsyncWorker(callback,"node-gst-superficial.PullWorker"), appsink(appsink) {};
 
-~PullWorker() {}
+  ~PullWorker() {}
 
-void Execute() {
-		sample = gst_app_sink_pull_sample(appsink);
-}
+  void Execute() {
+  		sample = gst_app_sink_pull_sample(appsink);
+  }
 
-void HandleOKCallback() {
+  void HandleOKCallback() {
 		Nan::HandleScope scope;
 
 		Local<Value> buf;
 		Local<Object> caps = Nan::New<Object>();
 		if (sample) {
 
-				GstCaps *gcaps = gst_sample_get_caps(sample);
-				if (gcaps) {
- 					const GstStructure *structure = gst_caps_get_structure(gcaps,0);
- 					if (structure) gst_structure_to_v8(caps, structure);
-  		}
+  				GstCaps *gcaps = gst_sample_get_caps(sample);
+  				if (gcaps) {
+   					const GstStructure *structure = gst_caps_get_structure(gcaps,0);
+   					if (structure) gst_structure_to_v8(caps, structure);
+    		}
 
-				buf = gstsample_to_v8(sample);
-				gst_sample_unref(sample);
-				sample = NULL;
- 	} else {
-				buf =  Nan::Null();
- 	}
+  				buf = gstsample_to_v8(sample);
+  				gst_sample_unref(sample);
+  				sample = NULL;
+   	} else {
+  				buf =  Nan::Null();
+   	}
 
-		Local<Value> argv[] = { buf, caps };
-		callback->Call(2, argv, async_resource);
-}
+  		Local<Value> argv[] = { buf, caps };
+  		callback->Call(2, argv, async_resource);
+  }
 
-private:
-GstAppSink *appsink;
-GstSample *sample;
+  private:
+  GstAppSink *appsink;
+  GstSample *sample;
 };
 
 NAN_METHOD(GObjectWrap::GstAppSinkPull) {
@@ -270,3 +270,33 @@ while (true)
 while (8) {
   test();
 }
+
+for (int i = 0; i < 10; i ++)
+  foobar();
+
+for (int i = 0; i < 10; i ++) {
+  foobar();
+}
+
+if (a && b
+  && ( c
+    ||
+    (e && (
+      f || g
+    ))
+  )) {
+  doit();
+}
+
+class FooBar {
+
+  public:
+  int doit();
+
+}
+
+std::cout<< user << ", " << capability << ": "
+  << users[user].cap_usage[capability].month
+  << std::endl;
+
+foo = 4;
