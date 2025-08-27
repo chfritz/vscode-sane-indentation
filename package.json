@@ -2,7 +2,7 @@
   "name": "sane-indentation",
   "displayName": "sane-indentation",
   "description": "Uses the parse-tree to sanely indent lines",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "repository": {
     "type": "git",
     "url": "https://github.com/chfritz/vscode-sane-indentation"
