@@ -270,7 +270,7 @@ async function activate(context) {
     }
 
     try {
-      const node = getTree(textEditor.document).rootNode.descendantForPosition({
+      let node = getTree(textEditor.document).rootNode.descendantForPosition({
         row: line,
         column: character
       });
