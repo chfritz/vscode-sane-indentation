@@ -1,8 +1,8 @@
 const vscode = require('vscode');
 
-const log = (...args) => console.log('sane-indentation', ...args);
+// const log = (...args) => console.log('sane-indentation', ...args);
   // global.saneDebug && console.log('sane-indentation', ...args);
-// const log = () => {};
+const log = () => {};
 
 // TODO: read from settings
 const languageScopes = {
@@ -234,7 +234,8 @@ async function activate(context) {
   if (parseTreeExtension == null) {
     throw new Error("Depends on pokey.parse-tree extension");
   }
-  const { getNodeAtLocation } = await parseTreeExtension.activate();
+
+  const { getTree } = await parseTreeExtension.activate();
 
   /** indent the given line number */
   const indentLine = (line, {textEditor, edit}) => {
@@ -269,9 +270,9 @@ async function activate(context) {
     }
 
     try {
-      let node = getNodeAtLocation({
-        range: {start: {line, character}},
-        uri: textEditor.document.uri
+      const node = getTree(textEditor.document).rootNode.descendantForPosition({
+        row: line,
+        column: character
       });
 
       // walk up the tree to find highest node that still start here
